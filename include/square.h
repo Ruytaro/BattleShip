@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifndef SQUARE_H
 #define SQUARE_H

@@ -8,19 +8,7 @@
 #include <nds.h>
 #include <gl2d.h>
 #include <maxmod9.h>
-#include "board.h"
-
-typedef enum{
-    GAME_STATE_INIT = 0,
-    GAME_STATE_MENU,
-    GAME_STATE_SETTINGS,
-    GAME_STATE_SETUP,
-    GAME_STATE_PLAYING,
-    GAME_STATE_PAUSED,
-    GAME_STATE_GAME_OVER,
-} GameState;
-
-uint8_t game_state = 0;
+#include "game.h"
 
 void handle_input();
 
@@ -28,9 +16,6 @@ int main(int argc, char **argv)
 {
     videoSetMode(MODE_0_3D);
 
-    game_state = GAME_STATE_INIT;
-    board_init();
-    fleet_init();
 
     
     // Initialize GL2D
