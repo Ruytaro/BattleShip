@@ -7,64 +7,51 @@
 
 #include <nds.h>
 #include <gl2d.h>
-#include <maxmod9.h>
+#include <filesystem.h>
+#include <nf_lib.h>
+
 #include "game.h"
 
-void handle_input();
+void handle_input(game_t*);
+
+game_t game;
+input_t input;
 
 int main(int argc, char **argv)
 {
-    videoSetMode(MODE_0_3D);
-
-
+    NF_Set2D(0, 0);
+    NF_Set2D(1, 0);
+    consoleDemoInit();
+    game_init(&game);
+    swiWaitForVBlank();
+    /*
+    printf("\n NitroFS init. Please wait.\n\n");
+    printf(" Iniciando NitroFS,\n por favor, espere.\n\n");
+    swiWaitForVBlank();
     
-    // Initialize GL2D
-    glScreen2D();
+    // Initialize NitroFS and set it as the root folder of the filesystem
+    nitroFSInit(NULL);
+    NF_SetRootFolder("NITROFS");
+    consoleClear();
 
+    // Initialize 3D engine in the bottom screen in mode 0
+    NF_Set3D(1, 0);
+
+    // Initialize tiled backgrounds system
+    NF_InitTiledBgBuffers();    // Initialize storage buffers
+    NF_InitTiledBgSys(0);       // Top screen
+
+    // Initialize 3D sprite system
+    NF_InitSpriteBuffers();     // Initialize storage buffers
+    NF_Init3dSpriteSys();
+    */
     while (1)
     {
-        // Handle input
-        handle_input();
-
-        glBegin2D();
-
-        // End 2D scene
-        glEnd2D();
-
-        glFlush(0);
+        input_handle(&input);
+        game_update(&game,&input);
+        game_draw(&game);
         swiWaitForVBlank();
-
     }
 
     return 0;
-}
-
-
-void handle_input()
-{
-    scanKeys();
-    u16 keys = keysDown();
-    if (keys & KEY_TOUCH) {
-        touchPosition touch;
-        touchRead(&touch);
-        // Handle touch input
-    }
-    if (keys & KEY_A) {
-        // Handle A button press
-    }
-    if (keys & KEY_B) {
-        // Handle B button press
-    }
-    if (keys & KEY_UP) {
-        // Handle B button press
-    }
-    if (keys & KEY_DOWN) {
-        // Handle A button press
-    }
-    if (keys & KEY_LEFT) {
-        // Handle Start button press
-    }
-    if (keys & KEY_RIGHT) {
-        // Handle Select button press
-    }
 }

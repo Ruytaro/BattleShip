@@ -11,11 +11,18 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 # User config
 # ===========
 
-NAME		:= BattleShip
+NAME		:= $(shell basename $(CURDIR))
+GAME_TITLE	:= $(shell basename $(CURDIR)).nds
+GAME_SUBTITLE	:= NightFox’s lib example
+GAME_AUTHOR	:= github.com/knightfox75/nds_nflib
+GAME_ICON	:= $(BLOCKSDS)/sys/icon.bmp
 
-GAME_TITLE	:= BattleShip
-GAME_AUTHOR	:= github.com/ruytaro
-GAME_ICON	:= icon.bmp
+# Source code paths
+# -----------------
+
+INCLUDEDIRS ?= include
+SOURCEDIRS	?= source
+NITROFSDIR	?= nitrofiles
 
 # DLDI and internal SD slot of DSi
 # --------------------------------
@@ -25,29 +32,12 @@ SDROOT		:= sdroot
 # Name of the generated image it "DSi-1.sd" for no$gba in DSi mode
 SDIMAGE		:= image.bin
 
-# Source code paths
-# -----------------
-
-SOURCEDIRS	:= source
-INCLUDEDIRS	:= include
-GFXDIRS		:= graphics
-BINDIRS		:= data
-AUDIODIRS	:= audio
-# List of folders to combine into the root of NitroFS:
-NITROFSDIR	:=
-
-# Defines passed to all files
-# ---------------------------
-
-DEFINES		:= -DSAMPLE_DEFINE -DSAMPLE_DEFINE_WITH_VALUE=123
-
 # Libraries
 # ---------
 
-ARM7ELF		:= $(BLOCKSDS)/sys/arm7/main_core/arm7_dswifi_maxmod.elf
-
-LIBS		:= -lmm9 -lnds9
-LIBDIRS		:= $(BLOCKSDS)/libs/maxmod \
+LIBS		+= -lnflib -ldswifi9 -lnds9 -lc
+LIBDIRS		+= $(BLOCKSDSEXT)/nflib \
+		   $(BLOCKSDS)/libs/dswifi \
 		   $(BLOCKSDS)/libs/libnds
 
 # Build artifacts
@@ -198,10 +188,9 @@ endif
 $(ROM): $(ELF)
 	@echo "  NDSTOOL $@"
 	$(V)$(BLOCKSDS)/tools/ndstool/ndstool -c $@ \
-		-7 $(ARM7ELF) -9 $(ELF) \
+		-7 $(BLOCKSDS)/sys/default_arm7/arm7.elf -9 $(ELF) \
 		-b $(GAME_ICON) "$(GAME_FULL_TITLE)" \
-		$(NDSTOOL_ARGS) 
-# -h 0x200
+		$(NDSTOOL_ARGS)
 
 $(ELF): $(OBJS)
 	@echo "  LD      $@"
