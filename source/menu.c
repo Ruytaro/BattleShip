@@ -1,18 +1,22 @@
 #include "menu.h"
 
 void menu_init(menu_t* menu, void (*exit_callback)(game_t*)) {
-    menu->state = 0; // Initial state
     menu->selected_option = 0; // No option selected
     menu->num_options = 0; // No options added yet
     menu->exit_callback = exit_callback; // Set exit callback
 }
+
 void menu_free(menu_t* menu) {
     for (uint8_t i = 0; i < menu->num_options; i++) {
         free(menu->options[i]); // Free each option string
     }
 }
+
+void menu_disable(menu_t* menu,bool disable) {
+    menu->disabled = disable;
+}
+
 void menu_reset(menu_t* menu) {
-    menu->state = 0; // Reset to initial state
     menu->selected_option = 0; // Reset selected option
     menu->num_options = 0; // Reset number of options
     for (uint8_t i = 0; i < 10; i++) {
@@ -83,8 +87,6 @@ void menu_handle_input(menu_t* menu, uint16_t input) {
             menu->selected_option++; // Move down in the menu
         }
     } else if (input & KEY_A) {
-        // Handle selection of the current option
-        printf("Selected option: %s\n", menu->options[menu->selected_option]);
         if (menu->callbacks[menu->selected_option] != NULL) {
             menu->callbacks[menu->selected_option](menu->game); // Call the callback function
         }
