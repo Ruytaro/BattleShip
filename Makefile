@@ -12,9 +12,9 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 # ===========
 
 NAME		:= $(shell basename $(CURDIR))
-GAME_TITLE	:= $(shell basename $(CURDIR)).nds
-GAME_SUBTITLE	:= NightFox’s lib example
-GAME_AUTHOR	:= github.com/knightfox75/nds_nflib
+GAME_TITLE	:= $(shell basename $(CURDIR))
+GAME_SUBTITLE	:= Sink the enemy fleet
+GAME_AUTHOR	:= github.com/Ruytaro/Battleship
 GAME_ICON	:= $(BLOCKSDS)/sys/icon.bmp
 
 # Source code paths
@@ -115,7 +115,9 @@ else
 endif
 
 INCLUDEFLAGS	:= $(foreach path,$(INCLUDEDIRS),-I$(path)) \
-		   $(foreach path,$(LIBDIRS),-I$(path)/include)
+		   $(foreach path,$(LIBDIRS),-I$(path)/include) \
+   		   -I/opt/wonderful/thirdparty/blocksds/core/libs/libnds/include/nds/
+
 
 LIBDIRSFLAGS	:= $(foreach path,$(LIBDIRS),-L$(path)/lib)
 
@@ -190,7 +192,7 @@ $(ROM): $(ELF)
 	$(V)$(BLOCKSDS)/tools/ndstool/ndstool -c $@ \
 		-7 $(BLOCKSDS)/sys/default_arm7/arm7.elf -9 $(ELF) \
 		-b $(GAME_ICON) "$(GAME_FULL_TITLE)" \
-		$(NDSTOOL_ARGS)
+		$(NDSTOOL_ARGS) -g BTSP RS Battleship
 
 $(ELF): $(OBJS)
 	@echo "  LD      $@"

@@ -1,14 +1,19 @@
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "board.h"
 #include "fleet.h"
 #include "input.h"
-#include "nifi.h"
+#include <nds.h>
+
+#ifndef NIFI_H
+#endif
 
 #ifndef GAME_H
 #define GAME_H
 
 #include "menu.h"
+#include "nifi.h"
 
 typedef enum{
     GAME_STATE_MENU,
@@ -31,6 +36,7 @@ typedef struct game{
     menu_t menu;            // Game menu
     bool is_sound_on;      // Sound on/off flag
     nifi_t* nifi;
+    char* player_name;      // Player's name
 } game_t;
 
 void game_init(game_t*);
@@ -46,5 +52,6 @@ void game_search_host(game_t* game);
 void game_init_boards(game_t* game);
 void game_sound_toggle(game_t* game);
 void game_online_toggle(game_t* game);
+void game_connect(game_t* game);
 
 #endif
