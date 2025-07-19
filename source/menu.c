@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "game.h"
 
 void menu_init(game_t* game, void (*exit_callback)(game_t*)) {
     menu_t* menu = &game->menu;
@@ -85,7 +86,6 @@ void menu_update_option(menu_t* menu, uint8_t index, const char* new_option, voi
 }
 
 void menu_draw(const menu_t* menu) {
-    consoleClear(); // Clear the console for drawing
     for (uint8_t i = 0; i < menu->num_options; i++) {
         if (i == menu->selected_option) {
             printf("-> %s\n", menu->labels[i]); // Highlight selected option

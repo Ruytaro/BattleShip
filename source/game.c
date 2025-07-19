@@ -2,24 +2,24 @@
 
 // set game name for online
 void game_set_name(game_t *game) {
-    u8 out_len = PersonalData->nameLen + 1;
-    u8 in_len = out_len * 2;
-    if (in_len <= 0) {
-        game->player_name = "Name not set";
+    u8 chars = PersonalData->nameLen;
+    u8 bytes_in = chars * 2;
+    u8 utf8_len = bytes_in + 1;
+    if (chars <= 0) {
+        game->player_name = "Player";
         return;
     }
-    char *utf8 = calloc(out_len,1);
-    if (utf16_to_utf8(utf8,out_len,(char16_t *)PersonalData->name,in_len)>0){
+    char *utf8 = calloc(utf8_len,1);
+    if (utf16_to_utf8(utf8,utf8_len,(char16_t *)PersonalData->name,bytes_in)>0){
         game->player_name = utf8;
         return;
     }
-    game->player_name = "Error reading name";
+    game->player_name = "Player";
 }
 
 // init game
 void game_init(game_t *game) {
     game->state = GAME_STATE_MENU;
-    game->is_networked = true;
     game_set_name(game);
     setup_main_menu(game);
     menu_disable(&game->menu,false);
@@ -59,42 +59,63 @@ void game_search_host(game_t* game) {
     game->state = GAME_STATE_SEARCH_HOST;
 }
 
+// setup config menu
 void setup_settings_menu(game_t* game) {
     menu_init(game, setup_main_menu);
     menu_add_option(&game->menu, game->is_sound_on ? "Sound: [ON]/OFF" : "Sound: ON/[OFF]",game_sound_toggle);
     menu_add_option(&game->menu, "Back to Main Menu",setup_main_menu);
 }
 
+// sound toggle
 void game_sound_toggle(game_t* game) {
     game->is_sound_on = !game->is_sound_on;
     menu_update_option(&game->menu, 0, game->is_sound_on ? "Sound: [ON]/OFF" : "Sound: ON/[OFF]",game_sound_toggle);
 }
 
+/// @brief 
+/// @param game 
 void game_connect(game_t* game) {
     nifi_connect(game);
 }
-
 
 // update logic
 void game_update(game_t *game,input_t *input) {
     if (!game->menu.disabled)
         menu_handle_input(game, input->keys);
-    if (game->state == GAME_STATE_SEARCH_HOST){
+    switch (game->state) {
+    case GAME_STATE_SEARCH_HOST:
         nifi_scanAPs(game);
         nifi_updateAPs(game);
+        break;
+    case GAME_STATE_WAIT_CLIENT:
+        nifi_check_clients(game);
+        break;
+    case GAME_STATE_INITIALIZING:
+        game_init_boards(game);
+        break;
+    case GAME_STATE_SETUP:
+        menu_disable(&game->menu,true);
+        nifi_check_conexion(game);
+    default:
+        break;
     }
 }
 
 // draw login
 void game_draw(game_t *game) {
+    consoleClear(); // Clear the console for drawing
     if (!game->menu.disabled)
         menu_draw(&game->menu);
-    if (game->state == GAME_STATE_WAIT_CLIENT) {
+    switch (game->state) {
+    case GAME_STATE_WAIT_CLIENT:
         printf("Game name: %s\n",game->player_name);
         printf("Waiting for clients...\n");
-    }
-    if (game->state == GAME_STATE_SEARCH_HOST){
-
+        break;
+    case GAME_STATE_SETUP:
+        printf("Wohooooooo!");
+        break;
+    default:
+        break;    
     }
 }
 
@@ -105,6 +126,7 @@ void game_init_boards(game_t* game) {
     game->enemy_board = board_init();
     game->enemy_fleet = fleet_init();
     game->state = GAME_STATE_SETUP;
+    game->cursor.active=1;
 }
 
 // frees game
@@ -132,5 +154,4 @@ void game_reset(game_t *game) {
     if (game->enemy_fleet)
         fleet_reset(game->enemy_fleet);
     game->state = GAME_STATE_MENU;
-    game->is_networked = true;
 }

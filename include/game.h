@@ -5,20 +5,15 @@
 #include "fleet.h"
 #include "input.h"
 #include <nds.h>
-
-#ifndef NIFI_H
-#endif
-
-#ifndef GAME_H
-#define GAME_H
-
 #include "menu.h"
 #include "nifi.h"
+#include "cursor.h"
 
 typedef enum{
     GAME_STATE_MENU,
     GAME_STATE_SEARCH_HOST,
     GAME_STATE_WAIT_CLIENT,
+    GAME_STATE_INITIALIZING,
     GAME_STATE_SETUP,
     GAME_STATE_PLAYING,
     GAME_STATE_PAUSED,
@@ -27,16 +22,16 @@ typedef enum{
 } GameState;
 
 typedef struct game{
-    uint8_t state;          // Current game state
+    GameState state;          // Current game state
     square_t* board;        // Player's board
     square_t* enemy_board;  // Enemy's board
     ship_t* fleet;          // Player's fleet
     ship_t* enemy_fleet;    // Enemy's fleet
-    bool is_networked;      // Networked game flag
     menu_t menu;            // Game menu
     bool is_sound_on;      // Sound on/off flag
-    nifi_t* nifi;
+    nifi_t* nifi;           // Store nifi status
     char* player_name;      // Player's name
+    cursor_t cursor;
 } game_t;
 
 void game_init(game_t*);
@@ -51,7 +46,4 @@ void game_start_host(game_t* game);
 void game_search_host(game_t* game);
 void game_init_boards(game_t* game);
 void game_sound_toggle(game_t* game);
-void game_online_toggle(game_t* game);
 void game_connect(game_t* game);
-
-#endif

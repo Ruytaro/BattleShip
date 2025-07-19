@@ -1,4 +1,5 @@
 #include "nifi.h"
+#include "game.h"
 
 const u32 GAME_ID = 0xBA771E01;
 
@@ -17,7 +18,7 @@ void nifi_init(game_t* game,bool host) {
     Wifi_InitDefault(INIT_ONLY);
     Wifi_SetChannel(13);
     if (host){
-        Wifi_MultiplayerHostMode(1,sizeof(nifi_frame_t),sizeof(nifi_frame_t));
+        Wifi_MultiplayerHostMode(1,0,0);
         while (!Wifi_LibraryModeReady()) swiWaitForVBlank();
         nifi->ready = true;
         nifi->host=1;
@@ -26,7 +27,7 @@ void nifi_init(game_t* game,bool host) {
         Wifi_MultiplayerFromClientSetPacketHandler(nifi_rx_handler_host);
     } else {
         Wifi_ScanModeFilter(WSCAN_LIST_NDS_HOSTS);
-        Wifi_MultiplayerClientMode(sizeof(nifi_frame_t));
+        Wifi_MultiplayerClientMode(0);
         while (!Wifi_LibraryModeReady()) swiWaitForVBlank();
         nifi->ready = true;
         Wifi_ScanMode();
@@ -61,6 +62,9 @@ void nifi_rx_handler_client(Wifi_MPPacketType type, int base, int len) {
     }
     u8 *data = (u8*)calloc(len,1);
     Wifi_RxRawReadPacket(base, len, data);
+    nifi_frame_t frame;
+    memcpy(&frame,data,len);
+    free(data);
     switch (type) {
     case WIFI_MPTYPE_REPLY:
         break;
@@ -71,7 +75,6 @@ void nifi_rx_handler_client(Wifi_MPPacketType type, int base, int len) {
     default:
         break;
     }
-    free(data);
 }
 
 void nifi_scanAPs(game_t* game) {
@@ -83,6 +86,7 @@ void nifi_scanAPs(game_t* game) {
     for (u8 i = 0; i< nifi->count; i++)
         menu_remove_option(&game->menu, 0);
     int count = Wifi_GetNumAP();
+    if (count > 8) count = 8;
     int valid = 0;
     Wifi_AccessPoint* tmpAps = (Wifi_AccessPoint*)calloc(count, sizeof(Wifi_AccessPoint));
     for (int i = 0; i < count; i++) {
@@ -122,11 +126,33 @@ void nifi_connect(game_t* game) {
             case ASSOCSTATUS_ASSOCIATED:
                 trying = false;
                 nifi->connected = true;
+                game->state=GAME_STATE_INITIALIZING;
                 break;
             case ASSOCSTATUS_CANNOTCONNECT:
                 trying = false;
-            default:
+                exit(0);
                 break;
+        }
+    }
+}
+
+void nifi_check_clients(game_t* game){
+    if (Wifi_MultiplayerGetNumClients() >0){
+        game->state=GAME_STATE_INITIALIZING;
+        Wifi_MultiplayerAllowNewClients(false);
+    }
+}
+
+void nifi_check_conexion(game_t* game){
+    if (game->nifi->host){
+        if (!Wifi_MultiplayerGetNumClients()){
+            game_free(game);
+            setup_main_menu(game);
+        }
+    } else {
+        if (Wifi_AssocStatus()!=ASSOCSTATUS_ASSOCIATED){
+            game_free(game);
+            setup_main_menu(game);
         }
     }
 }
