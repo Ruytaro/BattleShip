@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "nds.h": "c",
+        "ship.h": "c",
+        "game.h": "c",
+        "system.h": "c",
+        "serial.h": "c",
+        "menu.h": "c",
+        "input.h": "c"
+    }
+}

@@ -11,11 +11,11 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 # User config
 # ===========
 
-NAME		:= $(shell basename $(CURDIR))
-GAME_TITLE	:= $(shell basename $(CURDIR))
+NAME			:= $(shell basename $(CURDIR))
+GAME_TITLE		:= $(shell basename $(CURDIR))
 GAME_SUBTITLE	:= Sink the enemy fleet
-GAME_AUTHOR	:= github.com/Ruytaro/Battleship
-GAME_ICON	:= $(BLOCKSDS)/sys/icon.bmp
+GAME_AUTHOR		:= github.com/Ruytaro/Battleship
+GAME_ICON		:= $(BLOCKSDS)/sys/icon.bmp
 
 # Source code paths
 # -----------------
@@ -44,10 +44,10 @@ LIBDIRS		+= $(BLOCKSDSEXT)/nflib \
 # ---------------
 
 BUILDDIR	:= build/$(NAME)
-ELF		:= build/$(NAME).elf
+ELF			:= build/$(NAME).elf
 DUMP		:= build/$(NAME).dump
-MAP		:= build/$(NAME).map
-ROM		:= $(NAME).nds
+MAP			:= build/$(NAME).map
+ROM			:= $(NAME).nds
 
 # If NITROFSDIR is set, the soundbank created by mmutil will be saved to NitroFS
 SOUNDBANKINFODIR	:= $(BUILDDIR)/maxmod
@@ -61,12 +61,12 @@ endif
 # -----
 
 PREFIX		:= $(ARM_NONE_EABI_PATH)arm-none-eabi-
-CC		:= $(PREFIX)gcc
-CXX		:= $(PREFIX)g++
-LD		:= $(PREFIX)gcc
+CC			:= $(PREFIX)gcc
+CXX			:= $(PREFIX)g++
+LD			:= $(PREFIX)gcc
 OBJDUMP		:= $(PREFIX)objdump
 MKDIR		:= mkdir
-RM		:= rm -rf
+RM			:= rm -rf
 
 # Verbose flag
 # ------------

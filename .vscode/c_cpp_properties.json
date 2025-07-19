@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "NDS",
+            "includePath": [
+                "${workspaceFolder}/include/**",
+                "/opt/wonderful/thirdparty/blocksds/core/libs/**",
+                "/opt/wonderful/thirdparty/blocksds/external/**",
+                "/opt/wonderful/toolchain/gcc-arm-none-eabi/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/opt/wonderful/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-gcc-arm"
+        }
+    ],
+    "version": 4
+}
