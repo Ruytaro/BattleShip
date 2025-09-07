@@ -30,7 +30,7 @@ void setup_main_menu(game_t* game) {
     menu_init(game, NULL);  
     menu_add_option(&game->menu, "Play game",setup_play_menu); 
     menu_add_option(&game->menu, "Settings",setup_settings_menu);
-    menu_add_option(&game->menu, "Exit",NULL);
+    menu_add_option(&game->menu, "Game debug test", game_debug_test);
 }
 
 // setup play menu
@@ -72,8 +72,10 @@ void game_sound_toggle(game_t* game) {
     menu_update_option(&game->menu, 0, game->is_sound_on ? "Sound: [ON]/OFF" : "Sound: ON/[OFF]",game_sound_toggle);
 }
 
-/// @brief 
-/// @param game 
+void game_debug_test(game_t* game) {
+    game_init_boards(game);
+}
+
 void game_connect(game_t* game) {
     nifi_connect(game);
 }
@@ -94,8 +96,8 @@ void game_update(game_t *game,input_t *input) {
         game_init_boards(game);
         break;
     case GAME_STATE_SETUP:
-        menu_disable(&game->menu,true);
-        nifi_check_conexion(game);
+        //nifi_check_conexion(game);
+        break;
     default:
         break;
     }
@@ -112,7 +114,7 @@ void game_draw(game_t *game) {
         printf("Waiting for clients...\n");
         break;
     case GAME_STATE_SETUP:
-        printf("Wohooooooo!");
+        board_draw(game->board);
         break;
     default:
         break;    
@@ -126,7 +128,7 @@ void game_init_boards(game_t* game) {
     game->enemy_board = board_init();
     game->enemy_fleet = fleet_init();
     game->state = GAME_STATE_SETUP;
-    game->cursor.active=1;
+    menu_disable(&game->menu,true);
 }
 
 // frees game

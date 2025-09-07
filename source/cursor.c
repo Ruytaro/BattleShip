@@ -4,7 +4,7 @@ void toggle_cursor(cursor_t* cursor, bool active) {
     if (cursor == NULL) {
         return;
     }
-    cursor->active = active ? 1 : 0;
+    cursor->vertical = active ? 1 : 0;
 }
 
 void cursor_move(cursor_t* cursor,uint8_t index) {

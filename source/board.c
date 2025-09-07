@@ -24,14 +24,40 @@ void board_reset(square_t* board) {
     }
 }
 
-int place_ship(square_t* board, uint8_t index, ship_t* ship) {
-    if (index < 0 || index >= 100) {
-        return 1; // Invalid index
-    }
-    if (ship == NULL || ship->cells == NULL) {
-        return 2; // Invalid ship or ship cells
-    }
+uint8_t place_ship(square_t* board, uint8_t index, ship_t* ship) {
+    if (index > 100) return 1;
+    if (ship == NULL || ship->cells == NULL) return 2;
+    int size = ship->length+2;
 
+    for (int i = 0; i < size; i++) {
 
+    }
     return 0; // Success
+}
+
+void board_draw(square_t* board,bool reveal){
+    if (board == NULL) return;
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            square_t* square = &board[i * 10 + j];
+            switch (square->state) {
+                case SHIP_DAMAGED:
+                    printf("x ");
+                    break;
+                case SHIP_SHUNKED:
+                    printf("X ");
+                    break;
+                case WATER:
+                    printf("  ");
+                    break;
+                case SHIP_INTACT:
+                    printf("O ");
+                    break;
+                case FOGOFWAR:
+                    printf("? ");
+                    break;
+            }
+        }
+        printf("\n");
+    }
 }

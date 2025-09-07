@@ -3,11 +3,10 @@
 
 #ifndef SHIP_H
 #define SHIP_H
-typedef struct
-{
-    uint8_t ship_id:4; // 4 bits for ship ID (1-15)
-    uint8_t lenght:2; // 2 bits for ship length (0-3) + 2
-    uint8_t status:2;
+typedef struct {
+    uint8_t ship_id:4, // 4 bits for ship ID (1-15)
+            length:2,  // 2 bits for ship length (0-3) + 2
+            status:2;  // ship status (0-3)
     square_t** cells;
 } ship_t;
 

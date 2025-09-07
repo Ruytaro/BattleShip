@@ -8,6 +8,14 @@ export BLOCKSDSEXT		?= /opt/blocksds/external
 export WONDERFUL_TOOLCHAIN	?= /opt/wonderful
 ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 
+
+
+# Defines
+# =======
+
+DEFINES := -DPICOLIBC_INTEGER_PRINTF_SCANF
+#DEFINES := -DPICOLIBC_MINIMAL_PRINTF_SCANF
+
 # User config
 # ===========
 
