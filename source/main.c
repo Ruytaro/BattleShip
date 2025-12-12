@@ -12,7 +12,7 @@
 #include <system.h>
 
 #include "game.h"
-
+#include "input.h"
 game_t game;
 input_t input;
 

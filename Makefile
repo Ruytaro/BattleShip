@@ -200,6 +200,7 @@ $(ROM): $(ELF)
 	$(V)$(BLOCKSDS)/tools/ndstool/ndstool -c $@ \
 		-7 $(BLOCKSDS)/sys/default_arm7/arm7.elf -9 $(ELF) \
 		-b $(GAME_ICON) "$(GAME_FULL_TITLE)" \
+		-h 0x200 \
 		$(NDSTOOL_ARGS) -g BTSP RS Battleship
 
 $(ELF): $(OBJS)

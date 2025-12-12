@@ -44,23 +44,19 @@ void board_draw(square_t *board, bool reveal) {
       square_t *square = &board[i * 10 + j];
       switch (square->state) {
       case SHIP_DAMAGED:
-        printf("x ");
+        printf("x");
         break;
       case SHIP_SHUNKED:
-        printf("X ");
+        printf("X");
         break;
       case WATER:
-        printf("  ");
+        printf("W");
         break;
       case SHIP_INTACT:
-        printf("O ");
+        printf("O");
         break;
       case FOGOFWAR:
-        if (reveal) {
-          printf("  ");
-        } else {
-          printf("? ");
-        }
+        printf("?");
         break;
       }
     }
